@@ -238,7 +238,7 @@ private fun EpisodeRow(
                 .clip(MobilePlayerTokens.ShapeThumb)
                 .background(MobilePlayerTokens.PanelBg2)
                 .then(
-                    if (isActive) Modifier.border(1.5.dp, Color.White, MobilePlayerTokens.ShapeThumb)
+                    if (isActive) Modifier.border(1.5.dp, MobilePlayerTokens.Accent, MobilePlayerTokens.ShapeThumb)
                     else Modifier
                 )
         ) {
@@ -1387,7 +1387,8 @@ private fun SubtitleSettingsContent(
                 Row(
                     modifier = Modifier
                         .clip(RoundedCornerShape(8.dp))
-                        .background(Color.White.copy(alpha = 0.08f))
+                        .background(MobilePlayerTokens.PanelBg2)
+                        .border(1.dp, MobilePlayerTokens.PanelBorder, RoundedCornerShape(8.dp))
                         .padding(2.dp),
                     horizontalArrangement = Arrangement.spacedBy(2.dp)
                 ) {
@@ -1396,7 +1397,7 @@ private fun SubtitleSettingsContent(
                         Box(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(8.dp))
-                                .background(if (isSelected) Color.White.copy(alpha = 0.22f) else Color.Transparent)
+                                .background(if (isSelected) MobilePlayerTokens.Accent.copy(alpha = 0.20f) else Color.Transparent)
                                 .clickable(
                                     interactionSource = remember { MutableInteractionSource() },
                                     indication = null,
@@ -1465,7 +1466,8 @@ private fun SubtitleBadge(text: String) {
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(8.dp))
-            .background(Color.White.copy(alpha = 0.10f))
+            .background(MobilePlayerTokens.PanelBg2)
+            .border(1.dp, MobilePlayerTokens.PanelBorder, RoundedCornerShape(8.dp))
             .padding(horizontal = 6.dp, vertical = 2.dp)
     ) {
         Text(
@@ -2060,8 +2062,8 @@ private fun DelayAdjusterContent(
                 onValueChange = { onUpdateDelay(it.roundToLong()) },
                 valueRange = minMs.toFloat()..maxMs.toFloat(),
                 colors = SliderDefaults.colors(
-                    thumbColor = if (delayMs != 0L) Color(0xFFFFB300) else Color.White,
-                    activeTrackColor = if (delayMs != 0L) Color(0xFFFFB300) else Color.White,
+                    thumbColor = if (delayMs != 0L) MobilePlayerTokens.Accent else MobilePlayerTokens.InkPrimary,
+                    activeTrackColor = if (delayMs != 0L) MobilePlayerTokens.Accent else MobilePlayerTokens.InkPrimary,
                     inactiveTrackColor = Color.White.copy(alpha = 0.2f)
                 ),
                 modifier = Modifier
@@ -2265,6 +2267,7 @@ private fun MobileBottomSheetBase(
                     .heightIn(max = 420.dp)
                     .clip(MobilePlayerTokens.ShapeSheet)
                     .background(MobilePlayerTokens.PanelBg)
+                    .border(1.dp, MobilePlayerTokens.PanelBorder, MobilePlayerTokens.ShapeSheet)
                     .navigationBarsPadding()
                     .displayCutoutPadding()
                     .clickable(
@@ -2281,7 +2284,7 @@ private fun MobileBottomSheetBase(
                         .width(34.dp)
                         .height(4.dp)
                         .clip(RoundedCornerShape(8.dp))
-                        .background(Color.White.copy(alpha = 0.2f))
+                        .background(MobilePlayerTokens.Accent.copy(alpha = 0.42f))
                         .align(Alignment.CenterHorizontally)
                 )
 

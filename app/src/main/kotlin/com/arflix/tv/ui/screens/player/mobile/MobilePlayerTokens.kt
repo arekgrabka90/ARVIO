@@ -10,19 +10,20 @@ import androidx.compose.ui.unit.dp
  * Visual design tokens for ARVIO Mobile Player matching the HTML prototype.
  */
 object MobilePlayerTokens {
-    val InkPrimary = Color(0xFFFFFFFF)
-    val InkSecondary = Color(0xB8FFFFFF)   // 72%
-    val InkTertiary = Color(0x75FFFFFF)    // 46%
+    val Accent = Color(0xFFB99A68)
+    val InkPrimary = Color(0xFFE8EBF0)
+    val InkSecondary = Color(0xC2E8EBF0)
+    val InkTertiary = Color(0x78E8EBF0)
 
-    val TrackBg = Color(0x47FFFFFF)        // 28%
-    val TrackBuffered = Color(0x80FFFFFF)  // 50%
-    val TrackFill = Color(0xFFFFFFFF)
+    val TrackBg = Color(0x35E8EBF0)
+    val TrackBuffered = Color(0x70E8EBF0)
+    val TrackFill = Color(0xFFB99A68)
 
-    val PageBg = Color(0xFF0B0C10)
-    val PanelBg = Color(0xFF17181C)
-    val PanelBg2 = Color(0xFF1D1F24)
-    val PanelBorder = Color(0x17FFFFFF)    // 9%
-    val RowHover = Color(0x0DFFFFFF)       // 5%
+    val PageBg = Color(0xFF090B0F)
+    val PanelBg = Color(0xFF171B22)
+    val PanelBg2 = Color(0xFF1B2029)
+    val PanelBorder = Color(0x35B99A68)
+    val RowHover = Color(0x14B99A68)
 
     val ScrimColor = Color(0x40000000)     // 25%
 

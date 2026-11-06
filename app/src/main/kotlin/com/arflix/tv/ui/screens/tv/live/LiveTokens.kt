@@ -117,7 +117,7 @@ object LiveDims {
  * read a CompositionLocal.
  */
 @Composable
-fun liveAccent(): Color = LocalAccentColorOverride.current ?: Color.White
+fun liveAccent(): Color = LocalAccentColorOverride.current ?: Color(0xFFB99A68)
 
 val LocalLiveColors = staticCompositionLocalOf { LiveColors }
 val LocalLiveType   = staticCompositionLocalOf { LiveType }

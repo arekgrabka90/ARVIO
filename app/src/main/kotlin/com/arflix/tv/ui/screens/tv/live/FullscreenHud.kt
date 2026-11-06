@@ -8,6 +8,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.focusable
@@ -339,7 +340,7 @@ fun FullscreenHud(
                 Text(
                     text = formatHeaderDateTime(clockMillis),
                     style = LiveType.TimeMono.copy(
-                        color = Color.White.copy(alpha = 0.9f),
+                        color = Color(0xFFE8EBF0).copy(alpha = 0.92f),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Medium,
                     ),
@@ -406,8 +407,23 @@ fun FullscreenHud(
                         } else {
                             Modifier.padding(horizontal = 48.dp, vertical = 24.dp)
                         }
+                    )
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(
+                        Brush.verticalGradient(
+                            listOf(Color(0xF2171B22), Color(0xE6090B0F))
+                        )
+                    )
+                    .border(
+                        1.dp,
+                        Color(0x35B99A68),
+                        RoundedCornerShape(20.dp)
+                    )
+                    .padding(
+                        horizontal = if (touchControls) 16.dp else 20.dp,
+                        vertical = if (touchControls) 14.dp else 18.dp,
                     ),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 // --- Row 1: Channel Logo & Program Metadata ---
                 Row(
@@ -430,8 +446,8 @@ fun FullscreenHud(
                         Text(
                             text = liveProgrammeTitle(now?.title, channel?.name, stringResource(R.string.live_empty_no_programme)),
                             style = LiveType.ProgramTitle.copy(
-                                color = Color.White,
-                                fontSize = if (touchControls) 20.sp else 24.sp,
+                                color = Color(0xFFE8EBF0),
+                                fontSize = if (touchControls) 21.sp else 25.sp,
                                 fontWeight = FontWeight.Bold,
                             ),
                             maxLines = if (now?.title.isNullOrBlank()) Int.MAX_VALUE else 1,
@@ -443,7 +459,7 @@ fun FullscreenHud(
                             Text(
                                 text = programmeDescription,
                                 style = LiveType.ChannelName.copy(
-                                    color = Color.White.copy(alpha = 0.82f),
+                                    color = Color(0xFFC2C7D0).copy(alpha = 0.94f),
                                     fontSize = if (touchControls) 12.sp else 14.sp,
                                     fontWeight = FontWeight.Normal,
                                 ),
@@ -462,7 +478,7 @@ fun FullscreenHud(
                                 Text(
                                     text = timeWin,
                                     style = LiveType.TimeMono.copy(
-                                        color = Color.White.copy(alpha = 0.9f),
+                                        color = Color(0xFFB99A68),
                                         fontSize = if (touchControls) 12.sp else 14.sp,
                                     ),
                                 )
@@ -480,7 +496,7 @@ fun FullscreenHud(
                                 Text(
                                     text = remaining,
                                     style = LiveType.TimeMono.copy(
-                                        color = Color.White.copy(alpha = 0.75f),
+                                        color = Color(0xFFE8EBF0).copy(alpha = 0.82f),
                                         fontSize = if (touchControls) 12.sp else 14.sp,
                                     ),
                                 )
@@ -498,7 +514,7 @@ fun FullscreenHud(
                                 Text(
                                     text = if (isMobile) channel.name else "${channel.number}  ${channel.name}",
                                     style = LiveType.ChannelName.copy(
-                                        color = Color.White,
+                                        color = Color(0xFFE8EBF0),
                                         fontSize = if (touchControls) 13.sp else 15.sp,
                                         fontWeight = FontWeight.SemiBold,
                                     ),
@@ -529,14 +545,14 @@ fun FullscreenHud(
                                 Text(
                                     text = "${formatClock(next.startUtcMillis)} — ${formatClock(next.endUtcMillis)}",
                                     style = LiveType.TimeMono.copy(
-                                        color = Color.White.copy(alpha = 0.5f),
+                                        color = Color(0xFFB99A68).copy(alpha = 0.82f),
                                         fontSize = if (touchControls) 11.sp else 13.sp,
                                     ),
                                 )
                                 Text(
                                     text = next.title,
                                     style = LiveType.CellTitle.copy(
-                                        color = Color.White.copy(alpha = 0.6f),
+                                        color = Color(0xFFC2C7D0).copy(alpha = 0.78f),
                                         fontSize = if (touchControls) 11.sp else 13.sp,
                                     ),
                                     maxLines = 1,
@@ -569,7 +585,7 @@ fun FullscreenHud(
                             Text(
                                 text = positionText,
                                 style = LiveType.TimeMono.copy(
-                                    color = Color.White.copy(alpha = 0.85f),
+                                    color = Color(0xFFE8EBF0).copy(alpha = 0.88f),
                                     fontSize = if (touchControls) 13.sp else 14.sp,
                                     fontWeight = FontWeight.Medium,
                                 ),
@@ -818,9 +834,9 @@ internal fun HudSeekBar(
             enabled = onSeekToPosition != null && durationMs > 0L,
             modifier = modifier.fillMaxWidth().height(48.dp),
             colors = androidx.compose.material3.SliderDefaults.colors(
-                thumbColor = Color.White,
+                thumbColor = Color(0xFFB99A68),
                 activeTrackColor = liveAccent(),
-                inactiveTrackColor = LiveColors.Panel,
+                inactiveTrackColor = Color(0xFF454B55),
             ),
         )
         return
@@ -878,7 +894,7 @@ internal fun HudSeekBar(
                     .fillMaxWidth()
                     .height(if (isFocused) 6.dp else 4.dp)
                     .clip(RoundedCornerShape(8.dp))
-                    .background(if (isFocused) Color.White.copy(alpha = 0.35f) else LiveColors.Panel),
+                    .background(if (isFocused) Color(0xFFB99A68).copy(alpha = 0.34f) else Color(0xFF454B55)),
             )
 
             // Active progress fill
@@ -899,7 +915,7 @@ internal fun HudSeekBar(
                         .padding(start = thumbOffset)
                         .size(16.dp)
                         .clip(CircleShape)
-                        .background(Color.White),
+                        .background(Color(0xFFE8EBF0)),
                 )
             }
         }
@@ -920,15 +936,15 @@ private fun HudIconButton(
     var isFocused by remember { mutableStateOf(false) }
 
     val bgColor = when {
-        isFocused -> Color.White
+        isFocused -> Color(0xFFB99A68)
         emphasis -> liveAccent()
-        else -> Color.Black.copy(alpha = 0.55f)
+        else -> Color(0xFF171B22).copy(alpha = 0.92f)
     }
 
     val iconColor = when {
-        isFocused -> Color.Black
-        emphasis -> LiveColors.Bg
-        else -> Color.White
+        isFocused -> Color(0xFF090B0F)
+        emphasis -> Color(0xFF090B0F)
+        else -> Color(0xFFE8EBF0)
     }
 
     Box(
@@ -989,7 +1005,7 @@ private fun HudActionButton(
             .then(if (focusRequester != null) Modifier.focusRequester(focusRequester) else Modifier)
             .clip(CircleShape)
             .onFocusChanged { isFocused = it.isFocused }
-            .background(if (isFocused) Color.White else liveAccent())
+            .background(if (isFocused) Color(0xFFB99A68) else liveAccent())
             .liveFocusOutline(isFocused, 999.dp)
             .clickable(onClick = onClick)
             .padding(horizontal = 14.dp, vertical = 7.dp),
@@ -997,7 +1013,7 @@ private fun HudActionButton(
         Text(
             text = label,
             style = LiveType.Badge.copy(
-                color = if (isFocused) Color.Black else LiveColors.Bg,
+                color = Color(0xFF090B0F),
                 fontSize = 11.sp,
                 fontWeight = FontWeight.Bold,
             ),
@@ -1032,7 +1048,7 @@ private fun StreamTechBadge(
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(6.dp))
-                        .background(Color.White)
+                        .background(Color(0xFFB99A68).copy(alpha = 0.94f))
                         .padding(horizontal = 9.dp, vertical = 4.dp),
                 ) {
                     Text(

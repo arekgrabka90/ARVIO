@@ -5,6 +5,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -200,8 +201,8 @@ fun TvPlayerControls(
                         Brush.verticalGradient(
                             colorStops = arrayOf(
                                 0.0f to Color.Transparent,
-                                0.3f to Color.Black.copy(alpha = 0.2f),
-                                1.0f to Color.Black.copy(alpha = 0.7f)
+                                0.3f to Color.Black.copy(alpha = 0.14f),
+                                1.0f to Color.Black.copy(alpha = 0.62f)
                             )
                         )
                     )
@@ -392,12 +393,12 @@ fun TvPlayerControls(
                             .background(Color.Transparent),
                         contentAlignment = Alignment.Center
                     ) {
-                        val barHeight = if (trackbarFocused) 8.dp else 4.dp
+                        val barHeight = if (trackbarFocused) 6.dp else 3.dp
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(barHeight)
-                                .background(Color.White.copy(alpha = if (trackbarFocused) 0.25f else 0.15f), RoundedCornerShape(8.dp))
+                                .background(Color.White.copy(alpha = if (trackbarFocused) 0.22f else 0.12f), RoundedCornerShape(8.dp))
                         )
                         val frac = if (durationMs > 0) ((if (isScrubbing) scrubPreviewPositionMs else currentPositionMs).toFloat() / durationMs.toFloat()).coerceIn(0f, 1f) else progress
                         Box(
@@ -474,9 +475,9 @@ fun TvPlayerIconButton(
     onUpKey: () -> Unit = {},
     onDownKey: () -> Unit = {}
 ) {
-    val btnAccent = LocalAccentColorOverride.current ?: Color.White
+    val btnAccent = LocalAccentColorOverride.current ?: Color(0xFFB99A68)
     var focused by remember { mutableStateOf(false) }
-    val scale by animateFloatAsState(if (focused) 1.15f else 1f, label = "iconScale")
+    val scale by animateFloatAsState(if (focused) 1.06f else 1f, label = "iconScale")
 
     Box(
         modifier = Modifier
@@ -505,7 +506,14 @@ fun TvPlayerIconButton(
                 scaleY = scale
             }
             .background(
-                color = if (focused) btnAccent else Color.Transparent,
+                color = if (focused) Color.White.copy(alpha = 0.14f)
+                else Color.White.copy(alpha = 0.055f),
+                shape = CircleShape
+            )
+            .border(
+                width = if (focused) 1.5.dp else 1.dp,
+                color = if (focused) btnAccent.copy(alpha = 0.95f)
+                else Color.White.copy(alpha = 0.12f),
                 shape = CircleShape
             ),
         contentAlignment = Alignment.Center
@@ -513,7 +521,7 @@ fun TvPlayerIconButton(
         Icon(
             imageVector = icon,
             contentDescription = contentDescription,
-            tint = if (focused) Color.Black else Color.White,
+            tint = if (focused) btnAccent else Color.White.copy(alpha = 0.92f),
             modifier = Modifier.size(iconSize)
         )
     }
@@ -535,12 +543,12 @@ fun TvPlayerMetadataChrome(
     }
     val metaLine = buildTvPlaybackBaseMetaLine(uiState, mediaType, seasonNumber, episodeNumber)
     val overview = uiState.overview?.trim().orEmpty()
-    val logoHeight = 44.dp
-    val logoWidth = 230.dp
+    val logoHeight = 42.dp
+    val logoWidth = 220.dp
     val chromeHeight = when {
-        isPaused && overview.isNotBlank() -> 138.dp
-        isPaused -> 104.dp
-        else -> 86.dp
+        isPaused && overview.isNotBlank() -> 148.dp
+        isPaused -> 112.dp
+        else -> 92.dp
     }
 
     Row(
@@ -550,14 +558,14 @@ fun TvPlayerMetadataChrome(
         Box(
             modifier = Modifier
                 .padding(top = 2.dp)
-                .width(2.dp)
+                .width(3.dp)
                 .height(chromeHeight)
-                .background(accentColor.copy(alpha = if (isPaused) 0.78f else 0.46f))
+                .background(accentColor.copy(alpha = if (isPaused) 0.82f else 0.56f))
         )
-        Spacer(modifier = Modifier.width(16.dp))
+        Spacer(modifier = Modifier.width(18.dp))
         Column(
             modifier = Modifier.widthIn(max = if (isPaused) 560.dp else 470.dp),
-            verticalArrangement = Arrangement.spacedBy(if (isPaused) 5.dp else 4.dp)
+            verticalArrangement = Arrangement.spacedBy(if (isPaused) 7.dp else 5.dp)
         ) {
             if (!uiState.logoUrl.isNullOrBlank()) {
                 AsyncImage(
@@ -573,7 +581,7 @@ fun TvPlayerMetadataChrome(
                 Text(
                     text = displayTitle,
                     style = ArflixTypography.sectionTitle.copy(
-                        fontSize = 18.sp,
+                        fontSize = 22.sp,
                         fontWeight = FontWeight.Bold
                     ),
                     color = TextPrimary,
@@ -586,8 +594,8 @@ fun TvPlayerMetadataChrome(
                 Text(
                     text = displayTitle,
                     style = ArflixTypography.sectionTitle.copy(
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.SemiBold
                     ),
                     color = TextPrimary,
                     maxLines = 1,
@@ -599,7 +607,7 @@ fun TvPlayerMetadataChrome(
                 Text(
                     text = metaLine,
                     style = ArflixTypography.caption.copy(
-                        fontSize = 12.sp,
+                        fontSize = 13.sp,
                         fontWeight = FontWeight.Medium
                     ),
                     color = TextPrimary.copy(alpha = 0.78f),
@@ -611,7 +619,7 @@ fun TvPlayerMetadataChrome(
             if (isPaused && overview.isNotBlank()) {
                 Text(
                     text = overview,
-                    style = ArflixTypography.body.copy(fontSize = 13.sp),
+                    style = ArflixTypography.body.copy(fontSize = 14.sp),
                     color = TextPrimary.copy(alpha = 0.76f),
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis,

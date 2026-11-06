@@ -63,7 +63,7 @@ fun TvSubtitleSettingsPanel(
         exit = fadeOut(androidx.compose.animation.core.tween(200)),
         modifier = modifier
     ) {
-        val accent = LocalAccentColorOverride.current ?: Color.White
+        val accent = LocalAccentColorOverride.current ?: Color(0xFFB99A68)
 
         val absMs = if (syncOffsetMs < 0) -syncOffsetMs else syncOffsetMs
         val offsetLabel = if (syncOffsetMs == 0L) "0.0s"
@@ -72,8 +72,8 @@ fun TvSubtitleSettingsPanel(
         Column(
             modifier = Modifier
                 .width(280.dp)
-                .background(Color.Black.copy(alpha = 0.92f), RoundedCornerShape(16.dp))
-                .border(1.dp, Color.White.copy(alpha = 0.12f), RoundedCornerShape(16.dp))
+                .background(Color(0xFF171B22), RoundedCornerShape(16.dp))
+                .border(1.dp, Color(0x35B99A68), RoundedCornerShape(16.dp))
                 .padding(horizontal = 20.dp, vertical = 16.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
@@ -245,7 +245,7 @@ fun TvSubtitleMenu(
                 modifier = Modifier
                     .fillMaxHeight()
                     .width(if (activeTab == 0) 560.dp else 360.dp)
-                    .background(Color(0xFF141414))
+                    .background(Color(0xFF171B22))
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null
@@ -377,11 +377,11 @@ fun TvTabButton(
         modifier = modifier
             .clickable { onClick() }
             .background(
-                if (isSelected) Color.White.copy(alpha = 0.2f) else Color.Transparent,
+                if (isSelected) Color(0xFFB99A68).copy(alpha = 0.20f) else Color.Transparent,
                 RoundedCornerShape(16.dp)
             )
             .then(
-                if (isSelected) Modifier.border(1.dp, Color.White, RoundedCornerShape(16.dp))
+                if (isSelected) Modifier.border(1.dp, Color(0xFFB99A68), RoundedCornerShape(16.dp))
                 else Modifier
             )
             .padding(horizontal = 16.dp, vertical = 8.dp)
@@ -392,7 +392,7 @@ fun TvTabButton(
                 fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
                 fontSize = 14.sp
             ),
-            color = Color.White
+            color = Color(0xFFE8EBF0)
         )
     }
 }
@@ -411,7 +411,7 @@ fun TvTrackMenuItem(
             .fillMaxWidth()
             .clickable { onClick() }
             .background(
-                if (isFocused) Color.White else Color.Transparent,
+                if (isFocused) Color(0xFFB99A68) else Color.Transparent,
                 RoundedCornerShape(8.dp)
             )
             .padding(horizontal = 12.dp, vertical = 10.dp),
@@ -422,7 +422,7 @@ fun TvTrackMenuItem(
             Text(
                 text = label,
                 style = ArflixTypography.body.copy(fontSize = 14.sp),
-                color = if (isFocused) Color.Black else Color.White
+                color = if (isFocused) Color(0xFF090B0F) else Color(0xFFE8EBF0)
             )
             if (subtitle != null) {
                 Text(
@@ -431,7 +431,7 @@ fun TvTrackMenuItem(
                         fontSize = 11.sp,
                         fontWeight = FontWeight.SemiBold
                     ),
-                    color = if (isFocused) Color.Black.copy(alpha = 0.85f) else Color.White.copy(alpha = 0.85f)
+                    color = if (isFocused) Color(0xFF090B0F).copy(alpha = 0.85f) else Color(0xFFE8EBF0).copy(alpha = 0.85f)
                 )
             }
         }
@@ -440,7 +440,7 @@ fun TvTrackMenuItem(
             Icon(
                 imageVector = Icons.Default.Check,
                 contentDescription = stringResource(R.string.selected),
-                tint = if (isFocused) Color.Black else Color.White,
+                tint = if (isFocused) Color(0xFF090B0F) else Color(0xFFB99A68),
                 modifier = Modifier.size(18.dp)
             )
         }

@@ -161,9 +161,9 @@ fun QuickZapOverlay(
                 .background(
                     Brush.verticalGradient(
                         colors = listOf(
-                            Color.Black.copy(alpha = 0.90f),
-                            Color.Black.copy(alpha = 0.78f),
-                            Color.Black.copy(alpha = 0.90f)
+                            Color(0xF2090B0F),
+                            Color(0xE6171B22),
+                            Color(0xF2090B0F)
                         )
                     )
                 )
@@ -266,7 +266,7 @@ fun QuickZapOverlay(
                 Text(
                     text = (categories.getOrNull(selectedCategoryIndex)?.label?.let { liveCategoryLabel(it) } ?: stringResource(R.string.live_label_all_channels)).uppercase(),
                     style = LiveType.ChannelName.copy(
-                        color = LiveColors.Fg,
+                        color = Color(0xFFB99A68),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         letterSpacing = 1.5.sp
@@ -276,7 +276,7 @@ fun QuickZapOverlay(
                 Text(
                     text = "${stringResource(R.string.channel_guide).uppercase()} >",
                     style = LiveType.SectionTag.copy(
-                        color = LiveColors.FgMute,
+                        color = Color(0xFFC2C7D0),
                         fontSize = 11.sp,
                         letterSpacing = 1.sp
                     )
@@ -383,10 +383,12 @@ private fun FocusedCategoryRow(label: String, isFocused: Boolean) {
             .fillMaxWidth()
             .height(48.dp)
             .clip(RoundedCornerShape(8.dp))
-            .background(if (isFocused) LiveColors.PanelRaised else Color.Transparent)
+            .background(
+                if (isFocused) Color(0xFF29251F) else Color.Transparent
+            )
             .border(
                 width = if (isFocused) 1.5.dp else 0.dp,
-                color = if (isFocused) LiveColors.FocusRing else Color.Transparent,
+                color = if (isFocused) Color(0xFFB99A68) else Color.Transparent,
                 shape = RoundedCornerShape(8.dp)
             )
             .padding(horizontal = 16.dp),
@@ -416,7 +418,7 @@ private fun FocusedCategoryRow(label: String, isFocused: Boolean) {
         Text(
             text = label,
             style = LiveType.CellTitle.copy(
-                color = if (isFocused) liveAccent() else LiveColors.Fg,
+                color = if (isFocused) Color(0xFFB99A68) else LiveColors.Fg,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold
             ),
@@ -518,7 +520,7 @@ private fun NonFocusedChannelSlot(
                 .width(42.dp)
                 .height(28.dp)
                 .clip(RoundedCornerShape(4.dp))
-                .background(LiveColors.Panel)
+                .background(Color(0xFF1B2029))
         ) {
             ChannelLogo(channel = channel, size = 28.dp)
         }
@@ -551,10 +553,12 @@ private fun FocusedChannelSlot(
             .clip(RoundedCornerShape(LiveDims.CardRadius))
             .border(
                 width = if (isFocused) 2.dp else 0.dp,
-                color = if (isFocused) LiveColors.FocusRing else Color.Transparent,
+                color = if (isFocused) Color(0xFFB99A68) else Color.Transparent,
                 shape = RoundedCornerShape(LiveDims.CardRadius)
             )
-            .background(LiveColors.PanelRaised)
+            .background(
+                if (isFocused) Color(0xFF29251F) else Color(0xFF1B2029)
+            )
             .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -568,7 +572,7 @@ private fun FocusedChannelSlot(
                 Icon(
                     imageVector = Icons.Default.KeyboardArrowUp,
                     contentDescription = null,
-                    tint = LiveColors.FgDim,
+                    tint = Color(0xFFB99A68),
                     modifier = Modifier.size(16.dp)
                 )
             }
@@ -584,7 +588,7 @@ private fun FocusedChannelSlot(
                 Icon(
                     imageVector = Icons.Default.KeyboardArrowDown,
                     contentDescription = null,
-                    tint = LiveColors.FgDim,
+                    tint = Color(0xFFB99A68),
                     modifier = Modifier.size(16.dp)
                 )
             }
@@ -595,7 +599,7 @@ private fun FocusedChannelSlot(
                 .width(64.dp)
                 .height(48.dp)
                 .clip(RoundedCornerShape(LiveDims.CellRadius))
-                .background(LiveColors.Panel)
+                .background(Color(0xFF171B22))
         ) {
             ChannelLogo(channel = channel, size = 48.dp)
         }
@@ -644,7 +648,7 @@ private fun FocusedChannelSlot(
                     .height(3.dp)
                     .clip(RoundedCornerShape(1.5.dp)),
                 color = liveAccent(),
-                trackColor = LiveColors.Divider
+                trackColor = Color(0xFF454B55)
             )
         }
     }

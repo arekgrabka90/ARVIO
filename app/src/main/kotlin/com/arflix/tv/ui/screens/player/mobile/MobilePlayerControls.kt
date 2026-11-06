@@ -198,6 +198,8 @@ fun MobilePlayerCenterControls(
             modifier = Modifier
                 .size(56.dp)
                 .clip(CircleShape)
+                .background(MobilePlayerTokens.Accent.copy(alpha = 0.16f))
+                .border(1.dp, MobilePlayerTokens.Accent.copy(alpha = 0.58f), CircleShape)
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,
@@ -517,7 +519,7 @@ fun MobilePlayerBottomSection(
                 if (eyebrow.isNotBlank()) {
                     Text(
                         text = eyebrow.uppercase(),
-                        color = MobilePlayerTokens.InkSecondary,
+                        color = MobilePlayerTokens.Accent,
                         fontSize = 10.sp,
                         fontWeight = FontWeight.Bold,
                         letterSpacing = 1.sp,
@@ -529,8 +531,8 @@ fun MobilePlayerBottomSection(
                 Text(
                     text = mainTitle,
                     color = MobilePlayerTokens.InkPrimary,
-                    fontSize = 19.sp,
-                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     style = androidx.compose.ui.text.TextStyle(
@@ -699,7 +701,7 @@ fun MobilePlayerBottomSection(
                         .shadow(if (isScrubbing) 6.dp else 2.dp, RoundedCornerShape(2.dp))
                         .size(width = needleWidth, height = needleHeight)
                         .clip(RoundedCornerShape(2.dp))
-                        .background(Color.White)
+                        .background(MobilePlayerTokens.Accent)
                 )
 
                 // Floating seek thumbnail preview card
@@ -913,7 +915,7 @@ fun MobileIconButton(
             .size(38.dp)
             .scale(scale)
             .clip(CircleShape)
-            .background(if (isPressed) Color.White.copy(alpha = 0.16f) else Color.Transparent)
+            .background(if (isPressed) MobilePlayerTokens.Accent.copy(alpha = 0.20f) else Color.Transparent)
             .clickable(
                 interactionSource = interactionSource,
                 indication = null,
@@ -952,7 +954,7 @@ fun MobileIconButton(
             .size(38.dp)
             .scale(scale)
             .clip(CircleShape)
-            .background(if (isPressed) Color.White.copy(alpha = 0.16f) else Color.Transparent)
+            .background(if (isPressed) MobilePlayerTokens.Accent.copy(alpha = 0.20f) else Color.Transparent)
             .clickable(
                 interactionSource = interactionSource,
                 indication = null,
