@@ -47,6 +47,12 @@ jobs:
       - name: Prepare default configuration
         run: cp secrets.defaults.properties secrets.properties
 
+      - name: Inject TMDB API key
+        if: ${{ secrets.TMDB_API_KEY != '' }}
+        env:
+          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+        run: printf '\\nTMDB_API_KEY=%s\\n' "$TMDB_API_KEY" >> secrets.properties
+
       - name: Build SideloadDebug APK
         run: |
           chmod +x gradlew
