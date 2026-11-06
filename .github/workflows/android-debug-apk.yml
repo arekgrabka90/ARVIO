@@ -1,10 +1,17 @@
 name: ARVIO Android Debug APK
+run-name: ${{ inputs.build_label || 'ARVIO Android Debug APK' }} · ${{ github.ref_name }} · ${{ github.sha }}
 
 on:
   push:
     branches:
       - feature/live-tv-manager
   workflow_dispatch:
+    inputs:
+      build_label:
+        description: Build identification
+        required: false
+        default: ARVIO Android Debug APK
+        type: string
 
 permissions:
   contents: read
