@@ -81,6 +81,7 @@ jobs:
           chmod 600 "$KEYSTORE"
           keytool -list -keystore "$KEYSTORE" -storepass "$ARVIO_KEYSTORE_PASSWORD" -alias arvio-sideload >/dev/null
           echo "ARVIO_KEYSTORE_PATH=$KEYSTORE" >> "$GITHUB_ENV"
+          echo "ARVIO_KEYSTORE_PASSWORD=$ARVIO_KEYSTORE_PASSWORD" >> "$GITHUB_ENV"
           echo "Stable APK signing key verified."
 
       - name: Build SideloadDebug APK

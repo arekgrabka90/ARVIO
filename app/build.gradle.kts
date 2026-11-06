@@ -76,7 +76,7 @@ android {
         // Fire TV devices can be as low as Android 7.1 (API 25) or lower depending on model/OS.
         minSdk = 23
         targetSdk = 36
-        versionCode = 323
+        versionCode = 324
         versionName = "2.3.1"
         buildConfigField("String", "GITHUB_OWNER", "\"ProdigyV21\"")
         buildConfigField("String", "GITHUB_REPO", "\"ARVIO\"")
@@ -167,6 +167,16 @@ android {
     //   keyAlias=your_key_alias
     //   keyPassword=your_key_password
     signingConfigs {
+        create("sideload") {
+            storeFile = file(sideloadKeystorePath
+                ?: error("Missing ARVIO_KEYSTORE_PATH"))
+            storePassword = sideloadKeystorePassword
+                ?: error("Missing ARVIO_KEYSTORE_PASSWORD")
+            keyAlias = "arvio-sideload"
+            keyPassword = sideloadKeystorePassword
+                ?: error("Missing ARVIO_KEYSTORE_PASSWORD")
+        }
+
         create("release") {
             val keystorePropertiesFile = rootProject.file("keystore.properties")
             if (keystorePropertiesFile.exists()) {
