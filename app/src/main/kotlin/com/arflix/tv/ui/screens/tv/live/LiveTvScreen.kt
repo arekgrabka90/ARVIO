@@ -2,6 +2,7 @@
 
 package com.arflix.tv.ui.screens.tv.live
 
+import com.arflix.tv.ui.screens.settings.SettingsViewModel
 import com.arflix.tv.network.iptvProviderCooldownMs
 import com.arflix.tv.network.IptvProviderRequestGuard
 import com.arflix.tv.network.isIptvProviderRequestPaused
@@ -563,6 +564,8 @@ fun LiveTvScreen(
     // Lifecycle-aware collection so the screen stops draining state updates
     // the instant the user backs out — matters on a long-running IPTV flow
     // where the ViewModel pushes EPG refreshes every few seconds.
+    val settingsViewModel: SettingsViewModel = hiltViewModel()
+    val settingsUiState by settingsViewModel.uiState.collectAsStateWithLifecycle()
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val installedSportsAddons by viewModel.sportsAddons.installedAddons.collectAsStateWithLifecycle(initialValue = emptyList())
     val sportsAddonInstallations = remember(installedSportsAddons) {
@@ -4808,6 +4811,10 @@ fun LiveTvScreen(
                         streamVideoCodec = streamStats.videoCodec,
                         streamAudioInfo = streamStats.audioInfo,
                         streamBitrate = streamStats.bitrate,
+                        streamQualityLabel = streamStats.qualityLabel,
+                        streamAudioLabel = streamStats.audioLabel,
+                        streamTechDisplayStyle = settingsUiState.liveTvHudTechStyle,
+                        showProgrammeDescription = settingsUiState.liveTvHudShowEpgDescription,
                         categoryName = categoryTitle,
                         isCatchupMode = playingCatchupProgram != null,
                         isPlaying = if (playingCatchupProgram != null) playerPlayWhenReady else playerIsPlaying,

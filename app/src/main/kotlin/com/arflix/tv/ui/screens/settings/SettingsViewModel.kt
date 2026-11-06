@@ -359,6 +359,8 @@ data class SettingsUiState(
     val vodSearchEnabled: Boolean = true,
     val epgVodActionsEnabled: Boolean = true,
     val fallbackChannelLogosEnabled: Boolean = false,
+    val liveTvHudTechStyle: String = "classic",
+    val liveTvHudShowEpgDescription: Boolean = true,
     // App updates
     val isSelfUpdateSupported: Boolean = true,
     val quietUpdateNotifications: Boolean = false,
@@ -556,6 +558,8 @@ class SettingsViewModel @Inject constructor(
     // a handful of discrete dB values. Parsed back to Int on read.
     private fun volumeBoostDbKey() = profileManager.profileStringKey("volume_boost_db")
     private fun showLoadingStatsKey() = profileManager.profileBooleanKey("show_loading_stats")
+    private fun liveTvHudTechStyleKey() = profileManager.profileStringKey("live_tv_hud_tech_style")
+    private fun liveTvHudShowEpgDescriptionKey() = profileManager.profileBooleanKey("live_tv_hud_show_epg_description")
 
     private fun subtitleSizeKey() = profileManager.profileStringKey("subtitle_size")
     private fun subtitleColorKey() = profileManager.profileStringKey("subtitle_color")
@@ -816,6 +820,8 @@ class SettingsViewModel @Inject constructor(
             }
             val volumeBoostDb = prefs[volumeBoostDbKey()]?.toIntOrNull()?.coerceIn(0, 15) ?: 0
             val showLoadingStats = prefs[showLoadingStatsKey()] ?: true
+            val liveTvHudTechStyle = prefs[liveTvHudTechStyleKey()]?.takeIf { it == "chips" } ?: "classic"
+            val liveTvHudShowEpgDescription = prefs[liveTvHudShowEpgDescriptionKey()] ?: true
             val smoothScrolling = prefs[smoothScrollingKey()] ?: true
             val vodSearchEnabled = prefs[IPTV_VOD_SEARCH_ENABLED_KEY] ?: true
             val epgVodActionsEnabled = prefs[IPTV_EPG_VOD_ACTIONS_ENABLED_KEY] ?: true
@@ -986,6 +992,8 @@ class SettingsViewModel @Inject constructor(
                 vodSearchEnabled = vodSearchEnabled,
                 epgVodActionsEnabled = epgVodActionsEnabled,
                 fallbackChannelLogosEnabled = prefs[IPTV_FALLBACK_LOGOS_ENABLED_KEY] ?: false,
+                liveTvHudTechStyle = liveTvHudTechStyle,
+                liveTvHudShowEpgDescription = liveTvHudShowEpgDescription,
             )
 
             refreshIntegrationUsernames(loadProfileId, isTrakt, isMdbList, isSimkl)
@@ -2084,6 +2092,25 @@ class SettingsViewModel @Inject constructor(
 
     fun setFallbackChannelLogosEnabled(enabled: Boolean) {
         preferenceWriter.save(IPTV_FALLBACK_LOGOS_ENABLED_KEY, enabled, { it.fallbackChannelLogosEnabled }, { state, value -> state.copy(fallbackChannelLogosEnabled = value) }, sync = false)
+    }
+
+    fun cycleLiveTvHudTechStyle() {
+        val next = if (_uiState.value.liveTvHudTechStyle == "classic") "chips" else "classic"
+        preferenceWriter.save(
+            liveTvHudTechStyleKey(), next,
+            { it.liveTvHudTechStyle },
+            { state, value -> state.copy(liveTvHudTechStyle = value) },
+            sync = false,
+        )
+    }
+
+    fun setLiveTvHudShowEpgDescription(enabled: Boolean) {
+        preferenceWriter.save(
+            liveTvHudShowEpgDescriptionKey(), enabled,
+            { it.liveTvHudShowEpgDescription },
+            { state, value -> state.copy(liveTvHudShowEpgDescription = value) },
+            sync = false,
+        )
     }
 
     fun setShowLoadingStats(enabled: Boolean) {

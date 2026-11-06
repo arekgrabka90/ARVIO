@@ -105,6 +105,10 @@ fun FullscreenHud(
     streamVideoCodec: String = "",
     streamAudioInfo: String = "",
     streamBitrate: String = "",
+    streamQualityLabel: String = "",
+    streamAudioLabel: String = "",
+    streamTechDisplayStyle: String = "classic",
+    showProgrammeDescription: Boolean = true,
     categoryName: String? = null,
     isCatchupMode: Boolean = false,
     isPlaying: Boolean = true,
@@ -434,6 +438,20 @@ fun FullscreenHud(
                             overflow = TextOverflow.Ellipsis,
                         )
 
+                        val programmeDescription = now?.description?.trim().orEmpty()
+                        if (showProgrammeDescription && programmeDescription.isNotEmpty()) {
+                            Text(
+                                text = programmeDescription,
+                                style = LiveType.ChannelName.copy(
+                                    color = Color.White.copy(alpha = 0.82f),
+                                    fontSize = if (touchControls) 12.sp else 14.sp,
+                                    fontWeight = FontWeight.Normal,
+                                ),
+                                maxLines = 3,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                        }
+
                         // Time window + remaining duration + channel number & name
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
@@ -496,7 +514,10 @@ fun FullscreenHud(
                             fps = streamFps,
                             videoCodec = streamVideoCodec,
                             audioInfo = streamAudioInfo,
-                            bitrate = streamBitrate
+                            bitrate = streamBitrate,
+                            qualityLabel = streamQualityLabel,
+                            audioLabel = streamAudioLabel,
+                            displayStyle = streamTechDisplayStyle,
                         )
 
                         // Next Program Preview
@@ -991,11 +1012,44 @@ private fun StreamTechBadge(
     fps: String = "",
     videoCodec: String = "",
     audioInfo: String = "",
-    bitrate: String = ""
+    bitrate: String = "",
+    qualityLabel: String = "",
+    audioLabel: String = "",
+    displayStyle: String = "classic",
 ) {
+    if (displayStyle == "chips") {
+        val chips = listOf(
+            qualityLabel,
+            fps.takeIf { it.isNotBlank() }?.replace(" fps", " FPS").orEmpty(),
+            audioLabel,
+        ).filter { it.isNotBlank() }
+        if (chips.isEmpty()) return
+        androidx.compose.foundation.layout.FlowRow(
+            verticalArrangement = Arrangement.spacedBy(5.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            chips.forEach { label ->
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(6.dp))
+                        .background(Color.White)
+                        .padding(horizontal = 9.dp, vertical = 4.dp),
+                ) {
+                    Text(
+                        text = label,
+                        color = Color(0xFF171717),
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
+                }
+            }
+        }
+        return
+    }
+
+    // Original classic presentation remains available and unchanged.
     val elements = listOf(fps, resolution, videoCodec, audioInfo, bitrate).filter { it.isNotBlank() }
     if (elements.isEmpty()) return
-
     androidx.compose.foundation.layout.FlowRow(
         modifier = Modifier
             .clip(RoundedCornerShape(8.dp))

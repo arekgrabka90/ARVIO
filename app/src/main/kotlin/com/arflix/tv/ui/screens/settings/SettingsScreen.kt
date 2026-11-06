@@ -772,7 +772,8 @@ fun SettingsScreen(
             } else {
                 // Add-Playlist + M3U rows + Stalker rows + order + VOD search
                 // + EPG actions + favorites-on-home + refresh + clear + fallback logos
-                7 + uiState.iptvPlaylists.size + uiState.iptvStalkerPortals.size
+                // + Live TV HUD style + EPG description toggle
+                9 + uiState.iptvPlaylists.size + uiState.iptvStalkerPortals.size
             }
             "stream_integrations" -> uiState.streamProviderItems.size
             "home_server" -> uiState.homeServerConnections.size + 3
@@ -1652,6 +1653,12 @@ fun SettingsScreen(
                                                     contentFocusIndex == m3uCount + stalkerCount + 7 -> {
                                                         viewModel.setFallbackChannelLogosEnabled(!uiState.fallbackChannelLogosEnabled)
                                                     }
+                                                    contentFocusIndex == m3uCount + stalkerCount + 8 -> {
+                                                        viewModel.cycleLiveTvHudTechStyle()
+                                                    }
+                                                    contentFocusIndex == m3uCount + stalkerCount + 9 -> {
+                                                        viewModel.setLiveTvHudShowEpgDescription(!uiState.liveTvHudShowEpgDescription)
+                                                    }
                                                 }
                                             }
                                         }
@@ -2336,6 +2343,10 @@ fun SettingsScreen(
                             onEpgVodActionsToggle = viewModel::setEpgVodActionsEnabled,
                             fallbackChannelLogosEnabled = uiState.fallbackChannelLogosEnabled,
                             onFallbackChannelLogosToggle = viewModel::setFallbackChannelLogosEnabled,
+                            liveTvHudTechStyle = uiState.liveTvHudTechStyle,
+                            onCycleLiveTvHudTechStyle = viewModel::cycleLiveTvHudTechStyle,
+                            liveTvHudShowEpgDescription = uiState.liveTvHudShowEpgDescription,
+                            onLiveTvHudShowEpgDescriptionToggle = viewModel::setLiveTvHudShowEpgDescription,
                             favoritesOnHomeEnabled = uiState.iptvFavoritesOnHome,
                             onFavoritesOnHomeToggle = viewModel::setIptvFavoritesOnHome,
                         )
@@ -2402,6 +2413,10 @@ fun SettingsScreen(
                             onEpgVodActionsToggle = viewModel::setEpgVodActionsEnabled,
                             fallbackChannelLogosEnabled = uiState.fallbackChannelLogosEnabled,
                             onFallbackChannelLogosToggle = viewModel::setFallbackChannelLogosEnabled,
+                            liveTvHudTechStyle = uiState.liveTvHudTechStyle,
+                            onCycleLiveTvHudTechStyle = viewModel::cycleLiveTvHudTechStyle,
+                            liveTvHudShowEpgDescription = uiState.liveTvHudShowEpgDescription,
+                            onLiveTvHudShowEpgDescriptionToggle = viewModel::setLiveTvHudShowEpgDescription,
                             favoritesOnHomeEnabled = uiState.iptvFavoritesOnHome,
                             onFavoritesOnHomeToggle = viewModel::setIptvFavoritesOnHome,
                         )
@@ -5748,6 +5763,10 @@ private fun MobileSettingsSubPage(
                     onEpgVodActionsToggle = viewModel::setEpgVodActionsEnabled,
                     fallbackChannelLogosEnabled = uiState.fallbackChannelLogosEnabled,
                     onFallbackChannelLogosToggle = viewModel::setFallbackChannelLogosEnabled,
+                            liveTvHudTechStyle = uiState.liveTvHudTechStyle,
+                            onCycleLiveTvHudTechStyle = viewModel::cycleLiveTvHudTechStyle,
+                            liveTvHudShowEpgDescription = uiState.liveTvHudShowEpgDescription,
+                            onLiveTvHudShowEpgDescriptionToggle = viewModel::setLiveTvHudShowEpgDescription,
                     favoritesOnHomeEnabled = uiState.iptvFavoritesOnHome,
                     onFavoritesOnHomeToggle = viewModel::setIptvFavoritesOnHome,
                     onMovePlaylistBy = { id, steps -> viewModel.moveIptvPlaylistBy(id, steps) },
@@ -8081,6 +8100,10 @@ internal fun IptvSettings(
     onEpgVodActionsToggle: (Boolean) -> Unit = {},
     fallbackChannelLogosEnabled: Boolean = false,
     onFallbackChannelLogosToggle: (Boolean) -> Unit = {},
+    liveTvHudTechStyle: String = "classic",
+    onCycleLiveTvHudTechStyle: () -> Unit = {},
+    liveTvHudShowEpgDescription: Boolean = true,
+    onLiveTvHudShowEpgDescriptionToggle: (Boolean) -> Unit = {},
     favoritesOnHomeEnabled: Boolean = true,
     onFavoritesOnHomeToggle: (Boolean) -> Unit = {},
     // Touch only: a row dragged by its handle moves several places in one go.
@@ -8327,6 +8350,22 @@ internal fun IptvSettings(
                     isFocused = false,
                     onClick = { onFallbackChannelLogosToggle(!fallbackChannelLogosEnabled) },
                 )
+                MobileSettingsRow(
+                    icon = Icons.Default.LiveTv,
+                    title = "Live TV – styl informacji technicznych",
+                    subtitle = "Wybierz klasyczny pasek lub osobne białe etykiety",
+                    value = if (liveTvHudTechStyle == "chips") "Osobne etykiety" else "Klasyczny",
+                    isFocused = false,
+                    onClick = onCycleLiveTvHudTechStyle,
+                )
+                MobileSettingsRow(
+                    icon = Icons.Default.LiveTv,
+                    title = "Opis programu z EPG",
+                    subtitle = "Wyświetlaj opis pod tytułem aktualnego programu",
+                    value = if (liveTvHudShowEpgDescription) stringResource(R.string.on) else stringResource(R.string.off),
+                    isFocused = false,
+                    onClick = { onLiveTvHudShowEpgDescriptionToggle(!liveTvHudShowEpgDescription) },
+                )
             }
             MobileSettingsCategory(title = stringResource(R.string.settings_section_actions)) {
                 val refreshSubtitle = when { isLoading -> stringResource(R.string.settings_refreshing_channels_epg); error != null -> error; playlists.none { it.epgUrl.isNotBlank() || it.epgUrls.orEmpty().isNotEmpty() } -> stringResource(R.string.settings_reload_playlists_now); else -> stringResource(R.string.settings_reload_playlist_epg_now) }
@@ -8514,6 +8553,25 @@ internal fun IptvSettings(
                 isFocused = focusedIndex == trailingBase + 6,
                 onToggle = onFallbackChannelLogosToggle,
                 modifier = Modifier.settingsFocusSlot(trailingBase + 6),
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            SettingsRow(
+                icon = Icons.Default.LiveTv,
+                title = "Live TV – styl informacji technicznych",
+                subtitle = "Wybierz klasyczny pasek lub osobne białe etykiety",
+                value = if (liveTvHudTechStyle == "chips") "Osobne etykiety" else "Klasyczny",
+                isFocused = focusedIndex == trailingBase + 7,
+                onClick = onCycleLiveTvHudTechStyle,
+                modifier = Modifier.settingsFocusSlot(trailingBase + 7),
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            SettingsToggleRow(
+                title = "Opis programu z EPG",
+                subtitle = "Wyświetlaj opis pod tytułem aktualnego programu",
+                isEnabled = liveTvHudShowEpgDescription,
+                isFocused = focusedIndex == trailingBase + 8,
+                onToggle = onLiveTvHudShowEpgDescriptionToggle,
+                modifier = Modifier.settingsFocusSlot(trailingBase + 8),
             )
             if (isLoading && !progressText.isNullOrBlank()) {
                 Spacer(modifier = Modifier.height(12.dp))

@@ -16,12 +16,13 @@ class LiveStreamTechInfoTest {
         val audio = Format.Builder().setChannelCount(6).setSampleMimeType(MimeTypes.AUDIO_E_AC3)
             .setAverageBitrate(200_000).build()
         assertThat(liveStreamTechInfo(video, audio)).isEqualTo(
-            LiveStreamTechInfo("1080p", "50 fps", "h264", "5.1 eac3", "~5.2 Mbps"))
+            LiveStreamTechInfo("1080p", "50 fps", "h264", "5.1 eac3", "~5.2 Mbps", "FHD", "5.1"))
     }
 
     @Test fun unknownNewStreamCannotRetainPreviousValues() {
         val video = Format.Builder().setHeight(2160).setFrameRate(60f).build()
         assertThat(liveStreamTechInfo(video, null).fps).isEqualTo("60 fps")
+        assertThat(liveStreamTechInfo(video, null).qualityLabel).isEqualTo("4K")
         assertThat(liveStreamTechInfo(Format.Builder().build(), null)).isEqualTo(LiveStreamTechInfo())
     }
 
@@ -30,6 +31,24 @@ class LiveStreamTechInfoTest {
         val info = liveStreamTechInfo(video, null)
         assertThat(info.fps).isEqualTo("23.98 fps")
         assertThat(info.videoCodec).isEqualTo("av1")
+    }
+
+    @Test fun mapsResolutionAndAudioChannelLabels() {
+        val cases = listOf(
+            2160 to "4K",
+            1080 to "FHD",
+            720 to "HD",
+            576 to "SD",
+        )
+        cases.forEach { (height, expected) ->
+            assertThat(liveStreamTechInfo(Format.Builder().setHeight(height).build(), null).qualityLabel)
+                .isEqualTo(expected)
+        }
+        assertThat(liveStreamTechInfo(null, Format.Builder().setChannelCount(1).build()).audioLabel).isEqualTo("MONO")
+        assertThat(liveStreamTechInfo(null, Format.Builder().setChannelCount(2).build()).audioLabel).isEqualTo("STEREO")
+        assertThat(liveStreamTechInfo(null, Format.Builder().setChannelCount(6).build()).audioLabel).isEqualTo("5.1")
+        assertThat(liveStreamTechInfo(null, Format.Builder().setChannelCount(8).build()).audioLabel).isEqualTo("7.1")
+        assertThat(liveStreamTechInfo(null, Format.Builder().build()).audioLabel).isEmpty()
     }
 
     @Test fun missingAudioBitrateDoesNotPretendVideoBitrateIsTotal() {

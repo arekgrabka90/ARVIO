@@ -10,6 +10,8 @@ internal data class LiveStreamTechInfo(
     val videoCodec: String = "",
     val audioInfo: String = "",
     val bitrate: String = "",
+    val qualityLabel: String = "",
+    val audioLabel: String = "",
 )
 
 /** Unknown input-format values stay hidden; network bandwidth is not stream bitrate. */
@@ -19,6 +21,20 @@ internal fun liveStreamTechInfo(video: Format?, audio: Format?): LiveStreamTechI
         2 -> "2.0"
         6 -> "5.1"
         8 -> "7.1"
+        else -> ""
+    }
+    val audioLabel = when (audio?.channelCount) {
+        1 -> "MONO"
+        2 -> "STEREO"
+        6 -> "5.1"
+        8 -> "7.1"
+        else -> ""
+    }
+    val qualityLabel = when {
+        (video?.height ?: 0) >= 2160 -> "4K"
+        (video?.height ?: 0) >= 1080 -> "FHD"
+        (video?.height ?: 0) >= 720 -> "HD"
+        (video?.height ?: 0) > 0 -> "SD"
         else -> ""
     }
     val audioCodec = when (audio?.sampleMimeType) {
@@ -48,5 +64,7 @@ internal fun liveStreamTechInfo(video: Format?, audio: Format?): LiveStreamTechI
         },
         audioInfo = listOf(channels, audioCodec).filter { it.isNotEmpty() }.joinToString(" "),
         bitrate = bitrate,
+        qualityLabel = qualityLabel,
+        audioLabel = audioLabel,
     )
 }
