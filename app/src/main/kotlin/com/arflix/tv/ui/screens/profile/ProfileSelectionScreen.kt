@@ -309,16 +309,16 @@ internal fun ProfileSelectionContent(
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black)
+            .background(Brush.verticalGradient(listOf(Color(0xFF171326), Color(0xFF0B0B13), Color.Black)))
             .navigationBarsPadding()
             .onGloballyPositioned { rootCoordinates = it },
         contentAlignment = Alignment.Center
     ) {
         val contentWidth = if (isTouchDevice) (maxWidth - 48.dp).coerceAtMost(560.dp) else maxWidth - 96.dp
         val columns = if (isTouchDevice && maxWidth >= 600.dp) 3 else 2
-        val avatarSize = if (isTouchDevice) ((contentWidth - 24.dp * (columns - 1)) / columns).coerceIn(92.dp, 108.dp)
-            else ((contentWidth - 24.dp * 4) / 5).coerceAtMost(120.dp)
-        val avatarSpacing = 24.dp
+        val avatarSize = if (isTouchDevice) ((contentWidth - 24.dp * (columns - 1)) / columns).coerceIn(96.dp, 116.dp)
+            else ((contentWidth - 36.dp * 4) / 5).coerceIn(88.dp, 168.dp)
+        val avatarSpacing = 36.dp
         val backgroundAlpha = if (isTransitioning) {
             (1f - transitionProgress * 2.5f).coerceIn(0f, 1f)
         } else 1f
@@ -502,7 +502,7 @@ internal fun ProfileSelectionContent(
                             scaleY = currentScale
                         }
                         .size(avatarBaseSize)
-                        .clip(RoundedCornerShape(18.dp)),
+                        .clip(CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
                     ProfileAvatarVisual(
@@ -719,7 +719,8 @@ private fun ProfileAvatar(
                         .size(avatarSize)
                         .semantics { contentDescription = profile.name }
                         .scale(scale)
-                        .clip(RoundedCornerShape(18.dp))
+                        .clip(CircleShape)
+                        .border(if (isActiveProfile) 3.dp else 0.dp, Color(0xFF9B7BFF), CircleShape)
                         .clickable { onClick() }
                 ) { avatarContent() }
             } else {
@@ -737,7 +738,7 @@ private fun ProfileAvatar(
                             }
                         },
                     scale = ClickableSurfaceDefaults.scale(focusedScale = 1f),
-                    shape = ClickableSurfaceDefaults.shape(shape = RoundedCornerShape(18.dp)),
+                    shape = ClickableSurfaceDefaults.shape(shape = CircleShape),
                     colors = ClickableSurfaceDefaults.colors(
                         containerColor = Color.Transparent,
                         focusedContainerColor = Color.Transparent
@@ -745,7 +746,7 @@ private fun ProfileAvatar(
                     border = ClickableSurfaceDefaults.border(
                         focusedBorder = androidx.tv.material3.Border(
                             border = androidx.compose.foundation.BorderStroke(3.dp, Color.White),
-                            shape = RoundedCornerShape(18.dp)
+                            shape = CircleShape
                         )
                     )
                 ) { avatarContent() }
@@ -756,7 +757,7 @@ private fun ProfileAvatar(
                 Box(
                     modifier = Modifier
                         .size(avatarSize)
-                        .clip(RoundedCornerShape(18.dp))
+                        .clip(CircleShape)
                         .background(Color.Black.copy(alpha = 0.6f))
                         .then(if (isTouchDevice) Modifier.clickable { onClick() } else Modifier),
                     contentAlignment = Alignment.Center
@@ -830,9 +831,9 @@ private fun AddProfileButton(
                 modifier = Modifier
                     .size(avatarSize)
                     .scale(scale)
-                    .clip(RoundedCornerShape(18.dp))
+                    .clip(CircleShape)
                     .background(Color.White.copy(alpha = 0.1f))
-                    .border(2.dp, Color.White.copy(alpha = 0.3f), RoundedCornerShape(18.dp))
+                    .border(2.dp, Color.White.copy(alpha = 0.3f), CircleShape)
                     .clickable { onClick() }
             ) { addContent() }
         } else {
@@ -843,7 +844,7 @@ private fun AddProfileButton(
                     .scale(scale)
                     .onFocusChanged { isFocused = if (it.isFocused) 1 else 0 },
                 scale = ClickableSurfaceDefaults.scale(focusedScale = 1f),
-                shape = ClickableSurfaceDefaults.shape(shape = RoundedCornerShape(18.dp)),
+                shape = ClickableSurfaceDefaults.shape(shape = CircleShape),
                 colors = ClickableSurfaceDefaults.colors(
                     containerColor = Color.White.copy(alpha = 0.1f),
                     focusedContainerColor = Color.White.copy(alpha = 0.2f)
@@ -851,11 +852,11 @@ private fun AddProfileButton(
                 border = ClickableSurfaceDefaults.border(
                     border = androidx.tv.material3.Border(
                         border = androidx.compose.foundation.BorderStroke(2.dp, Color.White.copy(alpha = 0.3f)),
-                        shape = RoundedCornerShape(18.dp)
+                        shape = CircleShape
                     ),
                     focusedBorder = androidx.tv.material3.Border(
                         border = androidx.compose.foundation.BorderStroke(3.dp, Color.White),
-                        shape = RoundedCornerShape(18.dp)
+                        shape = CircleShape
                     )
                 )
             ) { addContent() }

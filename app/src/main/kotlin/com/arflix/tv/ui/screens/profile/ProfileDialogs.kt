@@ -9,6 +9,7 @@ import android.widget.EditText
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -232,6 +233,7 @@ private fun ProfileDialogContent(
     val configuration = LocalConfiguration.current
     val isTouchDevice = LocalDeviceType.current.isTouchDevice()
     val useMobileLayout = isTouchDevice && configuration.screenWidthDp < 700
+    var showAdvancedOptions by remember { mutableStateOf(false) }
     var editTextRef by remember { mutableStateOf<EditText?>(null) }
     val confirmButtonFocusRequester = remember { FocusRequester() }
 
@@ -453,7 +455,22 @@ private fun ProfileDialogContent(
                             }
                         }
 
-                        // 3. Kids Profile Controls (Optimized Mobile Card)
+                        Text(
+                            text = stringResource(
+                                if (showAdvancedOptions) R.string.profile_hide_additional_settings
+                                else R.string.profile_additional_settings
+                            ),
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color(0xFFB9A4FF),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(8.dp))
+                                .clickable { showAdvancedOptions = !showAdvancedOptions }
+                                .padding(vertical = 8.dp)
+                        )
+
+                        if (showAdvancedOptions) {
                         MobileKidsProfileControls(
                             isKidsProfile = isKidsProfile,
                             onKidsProfileChange = {
@@ -464,7 +481,6 @@ private fun ProfileDialogContent(
                             onKidsAgeLevelChange = onKidsAgeLevelChange
                         )
 
-                        // 4. Profile Lock (Optimized Mobile Card)
                         if (profile != null && onShowPinSetup != null && onRemovePin != null) {
                             MobileProfileLockControls(
                                 hasPin = !profile.pin.isNullOrEmpty(),
@@ -477,6 +493,8 @@ private fun ProfileDialogContent(
                                     onRemovePin()
                                 }
                             )
+                        }
+
                         }
 
                         // 5. Choose Avatar Section (Categories)
@@ -690,6 +708,22 @@ private fun ProfileDialogContent(
 
                         Spacer(modifier = Modifier.height(20.dp))
 
+                        Text(
+                            text = stringResource(
+                                if (showAdvancedOptions) R.string.profile_hide_additional_settings
+                                else R.string.profile_additional_settings
+                            ),
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color(0xFFB9A4FF),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(8.dp))
+                                .clickable { showAdvancedOptions = !showAdvancedOptions }
+                                .padding(vertical = 8.dp)
+                        )
+
+                        if (showAdvancedOptions) {
                         KidsProfileControls(
                             isKidsProfile = isKidsProfile,
                             onKidsProfileChange = {
@@ -751,6 +785,8 @@ private fun ProfileDialogContent(
                                 }
                             }
                             Spacer(modifier = Modifier.height(12.dp))
+                        }
+
                         }
 
                         // Buttons
@@ -886,7 +922,7 @@ private fun ProfileAvatarPreview(
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .size(size)
-                .clip(RoundedCornerShape(12.dp))
+                .clip(CircleShape)
                 .background(BackgroundElevated)
         )
         return
@@ -902,7 +938,7 @@ private fun ProfileAvatarPreview(
     Box(
         modifier = Modifier
             .size(size)
-            .clip(RoundedCornerShape(12.dp))
+            .clip(CircleShape)
             .background(Brush.verticalGradient(listOf(bgColors.first, bgColors.second))),
         contentAlignment = Alignment.Center
     ) {

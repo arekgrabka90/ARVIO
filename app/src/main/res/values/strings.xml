@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="profile_additional_settings">Additional settings</string>
+    <string name="profile_hide_additional_settings">Hide additional settings</string>
     <string name="settings_preference_save_failed">Could not save this setting. Please try again.</string>
     <string name="stream_source_cached">Cached</string>
     <string name="live_sports_source_count">Sources: %1$d</string>
