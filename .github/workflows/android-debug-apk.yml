@@ -51,9 +51,23 @@ jobs:
         env:
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
         run: |
-          if [ -n "$TMDB_API_KEY" ]; then
-            printf '\\nTMDB_API_KEY=%s\\n' "$TMDB_API_KEY" >> secrets.properties
-          fi
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+
+          path = Path("secrets.properties")
+          lines = path.read_text(encoding="utf-8").splitlines()
+          lines = [line for line in lines if not line.startswith("TMDB_API_KEY=")]
+          key = os.environ.get("TMDB_API_KEY", "").strip()
+
+          if key:
+              lines.append("TMDB_API_KEY=" + key)
+              print("TMDB_API_KEY configured.")
+          else:
+              print("::warning::TMDB_API_KEY is not configured.")
+
+          path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+          PY
 
       - name: Build SideloadDebug APK
         run: |
