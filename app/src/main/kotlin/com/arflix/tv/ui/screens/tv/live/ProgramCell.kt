@@ -100,14 +100,15 @@ fun ProgramCell(
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
     val currentOnClick by rememberUpdatedState(onClick)
     var focused by remember { mutableStateOf(false) }
-    val baseBg = when {
-        isNow -> LiveColors.FocusBg
-        else -> LiveColors.Panel
+    val baseBg = if (isNow) {
+        Color(0xFFB99A68).copy(alpha = 0.18f)
+    } else {
+        Color(0xFF1B2029)
     }
-    val bg = if (focused) Color.White else baseBg
-    val foreground = if (focused) Color.Black else LiveColors.Fg
-    val secondary = if (focused) Color.Black.copy(alpha = .7f) else LiveColors.FgDim
-    val muted = if (focused) Color.Black.copy(alpha = .65f) else LiveColors.FgMute
+    val bg = if (focused) Color(0xFFB99A68) else baseBg
+    val foreground = if (focused) Color(0xFF111318) else LiveColors.Fg
+    val secondary = if (focused) Color(0xFF29241D) else LiveColors.FgDim
+    val muted = if (focused) Color(0xFF393126) else LiveColors.FgMute
     val contentAlpha = animateFloatAsState(
         targetValue = if (isPast && !focused && !isCatchupSupported) 0.55f else 1f,
         animationSpec = tween(durationMillis = 90),
@@ -121,7 +122,7 @@ fun ProgramCell(
             // overhead. On a 60dp min-width block that left only ~34dp for
             // text + badges, which the LIVE pill alone consumed — leaving
             // blocks visually empty. Total horizontal overhead is now 8dp.
-            .padding(horizontal = 1.dp, vertical = 1.dp)
+            .padding(horizontal = 2.dp, vertical = 2.dp)
             .then(if (isPast && !isCatchupSupported) Modifier.graphicsLayer {
                 alpha = contentAlpha.value
             } else Modifier)
@@ -143,8 +144,15 @@ fun ProgramCell(
                 }
             )
             .drawBehind {
-                val radius = LiveDims.CellRadius.toPx()
+                val radius = 10.dp.toPx()
                 drawRoundRect(bg, cornerRadius = CornerRadius(radius))
+                if (focused) {
+                    drawRoundRect(
+                        color = Color(0xFFD0B17D).copy(alpha = 0.9f),
+                        cornerRadius = CornerRadius(radius),
+                        style = androidx.compose.ui.graphics.drawscope.Stroke(1.dp.toPx())
+                    )
+                }
             }
             .then(if (focusable) Modifier.focusable() else Modifier)
             .then(
@@ -189,7 +197,7 @@ fun ProgramCell(
                     }
                 }
             }
-            .padding(horizontal = 6.dp, vertical = 2.dp),
+            .padding(horizontal = 7.dp, vertical = 3.dp),
     ) {
         // Retain off-screen bounds/focus targets without laying out invisible text.
         if (renderContent) Column(

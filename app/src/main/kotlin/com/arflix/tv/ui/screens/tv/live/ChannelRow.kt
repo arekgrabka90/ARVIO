@@ -103,12 +103,12 @@ fun ChannelRow(
     // can be swallowed before combinedClickable turns them into a click.
     var longPressConsumed by remember { mutableStateOf(false) }
     val bg = when {
-        visuallyFocused -> Color.White
-        isActive -> LiveColors.FocusBg
-        else -> LiveColors.Panel
+        visuallyFocused -> Color(0xFFB99A68)
+        isActive -> Color(0xFFB99A68).copy(alpha = 0.16f)
+        else -> Color(0xFF171C24)
     }
-    val foreground = if (visuallyFocused) Color.Black else LiveColors.Fg
-    val secondary = if (visuallyFocused) Color.Black.copy(alpha = .7f) else LiveColors.FgDim
+    val foreground = if (visuallyFocused) Color(0xFF111318) else LiveColors.Fg
+    val secondary = if (visuallyFocused) Color(0xFF29241D) else LiveColors.FgDim
     val now = nowNext?.now
     val animatedBorderWidth = if (visuallyFocused) LiveDims.FocusBorder else 0.dp
     Row(
@@ -121,7 +121,7 @@ fun ChannelRow(
             }
             .drawWithContent {
                 val inset = 2.dp.toPx()
-                val radius = 6.dp.toPx()
+                val radius = 10.dp.toPx()
                 val surfaceSize = Size(
                     (size.width - inset * 2).coerceAtLeast(0f),
                     (size.height - inset * 2).coerceAtLeast(0f),
@@ -136,7 +136,7 @@ fun ChannelRow(
                 val stroke = if (visuallyFocused) animatedBorderWidth.toPx() else 0f
                 if (stroke > 0f) {
                     drawRoundRect(
-                        color = LiveColors.FocusRing,
+                        color = Color(0xFFD0B17D),
                         topLeft = Offset(inset + stroke / 2f, inset + stroke / 2f),
                         size = Size((surfaceSize.width - stroke).coerceAtLeast(0f), (surfaceSize.height - stroke).coerceAtLeast(0f)),
                         cornerRadius = CornerRadius((radius - stroke / 2f).coerceAtLeast(0f)),
