@@ -69,6 +69,20 @@ jobs:
           path.write_text("\n".join(lines) + "\n", encoding="utf-8")
           PY
 
+      - name: Prepare stable APK signing key
+        env:
+          ARVIO_KEYSTORE_BASE64: ${{ secrets.ARVIO_KEYSTORE_BASE64 }}
+          ARVIO_KEYSTORE_PASSWORD: ${{ secrets.ARVIO_KEYSTORE_PASSWORD }}
+        run: |
+          test -n "$ARVIO_KEYSTORE_BASE64" || { echo "::error::Missing ARVIO_KEYSTORE_BASE64"; exit 1; }
+          test -n "$ARVIO_KEYSTORE_PASSWORD" || { echo "::error::Missing ARVIO_KEYSTORE_PASSWORD"; exit 1; }
+          KEYSTORE="$RUNNER_TEMP/arvio-sideload.jks"
+          printf '%s' "$ARVIO_KEYSTORE_BASE64" | base64 --decode > "$KEYSTORE"
+          chmod 600 "$KEYSTORE"
+          keytool -list -keystore "$KEYSTORE" -storepass "$ARVIO_KEYSTORE_PASSWORD" -alias arvio-sideload >/dev/null
+          echo "ARVIO_KEYSTORE_PATH=$KEYSTORE" >> "$GITHUB_ENV"
+          echo "Stable APK signing key verified."
+
       - name: Build SideloadDebug APK
         run: |
           chmod +x gradlew

@@ -56,6 +56,9 @@ val downloadSherpaOnnx = tasks.register("downloadSherpaOnnx") {
 
 val discordSdkAar = layout.projectDirectory.file("libs/discord_partner_sdk.aar").asFile
 val hasDiscordSdk = discordSdkAar.isFile
+val sideloadKeystorePath = providers.environmentVariable("ARVIO_KEYSTORE_PATH").orNull
+val sideloadKeystorePassword = providers.environmentVariable("ARVIO_KEYSTORE_PASSWORD").orNull
+
 val includeX86Abis = providers.gradleProperty("includeX86Abis")
     .orNull
     ?.toBooleanStrictOrNull() == true
@@ -210,6 +213,14 @@ android {
         debug {
             isMinifyEnabled = false
             isDebuggable = true
+            signingConfig = if (
+                !sideloadKeystorePath.isNullOrBlank() &&
+                !sideloadKeystorePassword.isNullOrBlank()
+            ) {
+                signingConfigs.getByName("sideload")
+            } else {
+                signingConfigs.getByName("debug")
+            }
             // applicationIdSuffix = ".debug" // Disabled to preserve settings between debug/release
             versionNameSuffix = "-debug"
 
