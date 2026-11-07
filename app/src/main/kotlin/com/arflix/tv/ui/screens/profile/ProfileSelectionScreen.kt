@@ -1,5 +1,6 @@
 package com.arflix.tv.ui.screens.profile
 
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
