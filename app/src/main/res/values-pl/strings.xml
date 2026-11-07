@@ -61,4 +61,17 @@
     <string name="add_later">Dodaj filmy i seriale na później</string>
     <string name="sources_available">źródeł dostępnych</string>
     <string name="ends_at">Kończy się o</string>
+    <string name="profile_manage_hint">Wybierz profil, aby go edytować</string>
+    <string name="profile_edit_cd">Edytuj profil %1$s</string>
+    <string name="profile_current_cd">Bieżący profil</string>
+    <string name="profile_locked_cd">Chroniony kodem PIN</string>
+    <string name="whos_watching">Kto ogląda?</string>
+    <string name="manage_profiles">Zarządzaj profilami</string>
+    <string name="add_profile">Dodaj profil</string>
+    <string name="loading_profile">Wczytywanie profilu…</string>
+    <string name="done">Gotowe</string>
+    <string name="connect_to_cloud">Połącz z ARVIO Cloud</string>
+    <string name="syncing">Synchronizacja</string>
+    <string name="settings_cloud_signed_in_restore_failed">Zalogowano, ale przywracanie z chmury nie powiodło się</string>
+    <string name="profile_kids_badge">Dzieci</string>
 </resources>

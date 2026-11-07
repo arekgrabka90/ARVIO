@@ -394,4 +394,8 @@
     <string name="live_ai_subs_needs_key">יש להוסיף קודם מפתח Google Gemini API</string>
     <string name="live_ai_subs_auto_title">תרגום אוטומטי כשערוץ מתחיל</string>
     <string name="live_ai_subs_auto_desc">כל ערוץ מתחיל עם כתוביות AI, בלי לבחור אותן בתפריט הכתוביות</string>
+    <string name="profile_manage_hint">בחר פרופיל כדי לערוך אותו</string>
+    <string name="profile_edit_cd">ערוך את %1$s</string>
+    <string name="profile_current_cd">הפרופיל הנוכחי</string>
+    <string name="profile_locked_cd">מוגן בקוד PIN</string>
 </resources>

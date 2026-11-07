@@ -2110,4 +2110,8 @@
     <string name="live_ai_subs_needs_key">Add a Google Gemini API key first</string>
     <string name="live_ai_subs_auto_title">Auto-translate when a channel starts</string>
     <string name="live_ai_subs_auto_desc">Every channel starts with AI subtitles on, without picking them in the subtitle menu</string>
+    <string name="profile_manage_hint">Select a profile to edit it</string>
+    <string name="profile_edit_cd">Edit %1$s</string>
+    <string name="profile_current_cd">Current profile</string>
+    <string name="profile_locked_cd">PIN protected</string>
 </resources>

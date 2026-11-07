@@ -1657,4 +1657,9 @@
     <string name="live_ai_subs_needs_key">Primero añade una clave de API de Google Gemini</string>
     <string name="live_ai_subs_auto_title">Traducir automáticamente al iniciar un canal</string>
     <string name="live_ai_subs_auto_desc">Cada canal empieza con subtítulos IA, sin elegirlos en el menú de subtítulos</string>
+    <string name="profile_manage_hint">Selecciona un perfil para editarlo</string>
+    <string name="profile_edit_cd">Editar %1$s</string>
+    <string name="profile_current_cd">Perfil actual</string>
+    <string name="profile_locked_cd">Protegido con PIN</string>
+    <string name="profile_kids_badge">Niños</string>
 </resources>

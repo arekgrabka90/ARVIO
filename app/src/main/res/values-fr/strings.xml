@@ -1140,4 +1140,9 @@
     <string name="live_menu_hide_category">Masquer la catégorie</string>
     <string name="live_menu_unhide_category">Afficher la catégorie</string>
     <string name="ratings">Notes des Épisodes</string>
+    <string name="profile_manage_hint">Sélectionnez un profil pour le modifier</string>
+    <string name="profile_edit_cd">Modifier %1$s</string>
+    <string name="profile_current_cd">Profil actuel</string>
+    <string name="profile_locked_cd">Protégé par code PIN</string>
+    <string name="profile_kids_badge">Enfants</string>
 </resources>

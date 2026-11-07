@@ -1937,4 +1937,8 @@
     <string name="live_ai_subs_needs_key">Füge zuerst einen Google-Gemini-API-Schlüssel hinzu</string>
     <string name="live_ai_subs_auto_title">Automatisch übersetzen, wenn ein Sender startet</string>
     <string name="live_ai_subs_auto_desc">Jeder Sender startet mit KI-Untertiteln, ohne sie im Untertitelmenü auszuwählen</string>
+    <string name="profile_manage_hint">Profil zum Bearbeiten auswählen</string>
+    <string name="profile_edit_cd">%1$s bearbeiten</string>
+    <string name="profile_current_cd">Aktuelles Profil</string>
+    <string name="profile_locked_cd">PIN-geschützt</string>
 </resources>
