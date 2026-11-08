@@ -321,6 +321,7 @@ internal fun ProfileSelectionContent(
             .onGloballyPositioned { rootCoordinates = it },
         contentAlignment = Alignment.Center
     ) {
+        val availableWidth = maxWidth
         val isCompactHeight = maxHeight < 480.dp
         val slots = uiState.profiles.size + if (uiState.profiles.size < 5) 1 else 0
         val tileGapX = if (isTouchDevice) 20.dp else 32.dp
@@ -539,7 +540,7 @@ internal fun ProfileSelectionContent(
                         )
                     }
                 }
-                if (maxWidth < 600.dp || uiState.cloudRestoreFailed) {
+                if (availableWidth < 600.dp || uiState.cloudRestoreFailed) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(4.dp)
