@@ -28,32 +28,10 @@ jobs:
           java-version: "17"
           cache: gradle
 
-      - name: Validate private Discord SDK access
-        env:
-          DISCORD_SDK_DEPLOY_KEY: ${{ secrets.DISCORD_SDK_DEPLOY_KEY }}
-        run: |
-          : "${DISCORD_SDK_DEPLOY_KEY:?Missing DISCORD_SDK_DEPLOY_KEY repository secret}"
-
-      - name: Fetch private Discord Partner SDK
-        uses: actions/checkout@v4
-        with:
-          repository: ProdigyV21/ARVIO-private-dependencies
-          ref: main
-          path: .private-dependencies
-          ssh-key: ${{ secrets.DISCORD_SDK_DEPLOY_KEY }}
-          persist-credentials: false
-
-      - name: Install Discord Partner SDK
-        run: |
-          install -d app/libs
-          install -m 0600 .private-dependencies/discord_partner_sdk.aar app/libs/discord_partner_sdk.aar
-          echo "dc7b1014ae4797e5469261d151fd26fc056524d03e42e55fd39e085f0f09e71a  app/libs/discord_partner_sdk.aar" | sha256sum --check --strict
-
-      - name: Validate required credentials
+      - name: Validate own credentials
         env:
           APP_ANON_KEY: ${{ secrets.APP_ANON_KEY }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
           TRAKT_CLIENT_ID: ${{ secrets.TRAKT_CLIENT_ID }}
           TRAKT_CLIENT_SECRET: ${{ secrets.TRAKT_CLIENT_SECRET }}
           TELEGRAM_API_ID: ${{ secrets.TELEGRAM_API_ID }}
@@ -63,21 +41,21 @@ jobs:
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
-          : "${APP_ANON_KEY:?Missing APP_ANON_KEY repository secret}"
-          : "${SUPABASE_URL:?Missing SUPABASE_URL repository secret}"
+          : "${APP_ANON_KEY:?Missing your APP_ANON_KEY}"
+          : "${SUPABASE_URL:?Missing your SUPABASE_URL}"
+          : "${TRAKT_CLIENT_ID:?Missing your TRAKT_CLIENT_ID}"
+          : "${TRAKT_CLIENT_SECRET:?Missing your TRAKT_CLIENT_SECRET}"
+          : "${TELEGRAM_API_ID:?Missing your TELEGRAM_API_ID}"
+          : "${TELEGRAM_API_HASH:?Missing your TELEGRAM_API_HASH}"
+          : "${KEYSTORE_BASE64:?Missing your signing keystore}"
+          : "${KEYSTORE_PASSWORD:?Missing your keystore password}"
+          : "${KEY_ALIAS:?Missing your key alias}"
+          : "${KEY_PASSWORD:?Missing your key password}"
+
           case "$SUPABASE_URL" in
-            http://*|https://*) ;;
-            *) echo "SUPABASE_URL must be an HTTP(S) URL" >&2; exit 1 ;;
+            https://*|http://*) ;;
+            *) echo "Invalid SUPABASE_URL" >&2; exit 1 ;;
           esac
-          : "${TMDB_API_KEY:?Missing TMDB_API_KEY repository secret}"
-          : "${TRAKT_CLIENT_ID:?Missing TRAKT_CLIENT_ID repository secret}"
-          : "${TRAKT_CLIENT_SECRET:?Missing TRAKT_CLIENT_SECRET repository secret}"
-          : "${TELEGRAM_API_ID:?Missing TELEGRAM_API_ID repository secret}"
-          : "${TELEGRAM_API_HASH:?Missing TELEGRAM_API_HASH repository secret}"
-          : "${KEYSTORE_BASE64:?Missing KEYSTORE_BASE64 repository secret}"
-          : "${KEYSTORE_PASSWORD:?Missing KEYSTORE_PASSWORD repository secret}"
-          : "${KEY_ALIAS:?Missing KEY_ALIAS repository secret}"
-          : "${KEY_PASSWORD:?Missing KEY_PASSWORD repository secret}"
 
       - name: Prepare runtime configuration
         env:
@@ -92,20 +70,20 @@ jobs:
           TELEGRAM_API_ID: ${{ secrets.TELEGRAM_API_ID }}
           TELEGRAM_API_HASH: ${{ secrets.TELEGRAM_API_HASH }}
         run: |
-          printf '%s\n' \
-            "APP_ANON_KEY=$APP_ANON_KEY" \
-            "SUPABASE_URL=$SUPABASE_URL" \
-            "SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY" \
-            "GOOGLE_WEB_CLIENT_ID=$GOOGLE_WEB_CLIENT_ID" \
-            "TMDB_API_KEY=$TMDB_API_KEY" \
-            "TRAKT_CLIENT_ID=$TRAKT_CLIENT_ID" \
-            "TRAKT_CLIENT_SECRET=$TRAKT_CLIENT_SECRET" \
-            "MDBLIST_CLIENT_ID=${MDBLIST_CLIENT_ID:-}" \
-            "TELEGRAM_API_ID=$TELEGRAM_API_ID" \
-            "TELEGRAM_API_HASH=$TELEGRAM_API_HASH" \
-            > secrets.properties
+          {
+            printf 'APP_ANON_KEY=%s\n' "$APP_ANON_KEY"
+            printf 'SUPABASE_URL=%s\n' "$SUPABASE_URL"
+            printf 'SUPABASE_ANON_KEY=%s\n' "$SUPABASE_ANON_KEY"
+            printf 'GOOGLE_WEB_CLIENT_ID=%s\n' "$GOOGLE_WEB_CLIENT_ID"
+            printf 'TMDB_API_KEY=%s\n' "$TMDB_API_KEY"
+            printf 'TRAKT_CLIENT_ID=%s\n' "$TRAKT_CLIENT_ID"
+            printf 'TRAKT_CLIENT_SECRET=%s\n' "$TRAKT_CLIENT_SECRET"
+            printf 'MDBLIST_CLIENT_ID=%s\n' "$MDBLIST_CLIENT_ID"
+            printf 'TELEGRAM_API_ID=%s\n' "$TELEGRAM_API_ID"
+            printf 'TELEGRAM_API_HASH=%s\n' "$TELEGRAM_API_HASH"
+          } > secrets.properties
 
-      - name: Prepare production signing
+      - name: Prepare own production signing key
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
@@ -113,12 +91,13 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
           printf '%s' "$KEYSTORE_BASE64" | base64 --decode > "$GITHUB_WORKSPACE/arvio-release.keystore"
-          printf '%s\n' \
-            "storeFile=$GITHUB_WORKSPACE/arvio-release.keystore" \
-            "storePassword=$KEYSTORE_PASSWORD" \
-            "keyAlias=$KEY_ALIAS" \
-            "keyPassword=$KEY_PASSWORD" \
-            > keystore.properties
+          test -s "$GITHUB_WORKSPACE/arvio-release.keystore"
+          {
+            printf 'storeFile=%s\n' "$GITHUB_WORKSPACE/arvio-release.keystore"
+            printf 'storePassword=%s\n' "$KEYSTORE_PASSWORD"
+            printf 'keyAlias=%s\n' "$KEY_ALIAS"
+            printf 'keyPassword=%s\n' "$KEY_PASSWORD"
+          } > keystore.properties
 
       - name: Build Sideload Release APK
         run: ./gradlew assembleSideloadRelease uploadCrashlyticsSymbolFileSideloadRelease --no-daemon
