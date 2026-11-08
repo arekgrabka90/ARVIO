@@ -1,20 +1,29 @@
-name: ARVIO Profile Release APK
+name: ARVIO Profile Preview APK
 
 on:
   push:
     branches:
       - feature/profile-screen-redesign
+    paths:
+      - ".github/workflows/profile-release-apk.yml"
+      - "app/**"
+      - "build.gradle.kts"
+      - "settings.gradle.kts"
+      - "gradle/**"
+      - "gradlew"
+      - "gradle.properties"
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: profile-release-${{ github.ref }}
+  group: profile-preview-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  build-signed-apk:
-    name: Build signed Sideload Release APK
+  build-preview-apk:
+    name: Build profile preview APK
     runs-on: ubuntu-latest
 
     steps:
@@ -28,93 +37,20 @@ jobs:
           java-version: "17"
           cache: gradle
 
-      - name: Validate own credentials
-        env:
-          APP_ANON_KEY: ${{ secrets.APP_ANON_KEY }}
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          TRAKT_CLIENT_ID: ${{ secrets.TRAKT_CLIENT_ID }}
-          TRAKT_CLIENT_SECRET: ${{ secrets.TRAKT_CLIENT_SECRET }}
-          TELEGRAM_API_ID: ${{ secrets.TELEGRAM_API_ID }}
-          TELEGRAM_API_HASH: ${{ secrets.TELEGRAM_API_HASH }}
-          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+      - name: Build Play Diagnostics APK
+        run: ./gradlew :app:assemblePlayDiagnostics --no-daemon
+
+      - name: Verify APK exists
         run: |
-          : "${APP_ANON_KEY:?Missing your APP_ANON_KEY}"
-          : "${SUPABASE_URL:?Missing your SUPABASE_URL}"
-          : "${TRAKT_CLIENT_ID:?Missing your TRAKT_CLIENT_ID}"
-          : "${TRAKT_CLIENT_SECRET:?Missing your TRAKT_CLIENT_SECRET}"
-          : "${TELEGRAM_API_ID:?Missing your TELEGRAM_API_ID}"
-          : "${TELEGRAM_API_HASH:?Missing your TELEGRAM_API_HASH}"
-          : "${KEYSTORE_BASE64:?Missing your signing keystore}"
-          : "${KEYSTORE_PASSWORD:?Missing your keystore password}"
-          : "${KEY_ALIAS:?Missing your key alias}"
-          : "${KEY_PASSWORD:?Missing your key password}"
-
-          case "$SUPABASE_URL" in
-            https://*|http://*) ;;
-            *) echo "Invalid SUPABASE_URL" >&2; exit 1 ;;
-          esac
-
-      - name: Prepare runtime configuration
-        env:
-          APP_ANON_KEY: ${{ secrets.APP_ANON_KEY }}
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
-          GOOGLE_WEB_CLIENT_ID: ${{ secrets.GOOGLE_WEB_CLIENT_ID }}
-          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
-          TRAKT_CLIENT_ID: ${{ secrets.TRAKT_CLIENT_ID }}
-          TRAKT_CLIENT_SECRET: ${{ secrets.TRAKT_CLIENT_SECRET }}
-          MDBLIST_CLIENT_ID: ${{ secrets.MDBLIST_CLIENT_ID }}
-          TELEGRAM_API_ID: ${{ secrets.TELEGRAM_API_ID }}
-          TELEGRAM_API_HASH: ${{ secrets.TELEGRAM_API_HASH }}
-        run: |
-          {
-            printf 'APP_ANON_KEY=%s\n' "$APP_ANON_KEY"
-            printf 'SUPABASE_URL=%s\n' "$SUPABASE_URL"
-            printf 'SUPABASE_ANON_KEY=%s\n' "$SUPABASE_ANON_KEY"
-            printf 'GOOGLE_WEB_CLIENT_ID=%s\n' "$GOOGLE_WEB_CLIENT_ID"
-            printf 'TMDB_API_KEY=%s\n' "$TMDB_API_KEY"
-            printf 'TRAKT_CLIENT_ID=%s\n' "$TRAKT_CLIENT_ID"
-            printf 'TRAKT_CLIENT_SECRET=%s\n' "$TRAKT_CLIENT_SECRET"
-            printf 'MDBLIST_CLIENT_ID=%s\n' "$MDBLIST_CLIENT_ID"
-            printf 'TELEGRAM_API_ID=%s\n' "$TELEGRAM_API_ID"
-            printf 'TELEGRAM_API_HASH=%s\n' "$TELEGRAM_API_HASH"
-          } > secrets.properties
-
-      - name: Prepare own production signing key
-        env:
-          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: |
-          printf '%s' "$KEYSTORE_BASE64" | base64 --decode > "$GITHUB_WORKSPACE/arvio-release.keystore"
-          test -s "$GITHUB_WORKSPACE/arvio-release.keystore"
-          {
-            printf 'storeFile=%s\n' "$GITHUB_WORKSPACE/arvio-release.keystore"
-            printf 'storePassword=%s\n' "$KEYSTORE_PASSWORD"
-            printf 'keyAlias=%s\n' "$KEY_ALIAS"
-            printf 'keyPassword=%s\n' "$KEY_PASSWORD"
-          } > keystore.properties
-
-      - name: Build Sideload Release APK
-        run: ./gradlew assembleSideloadRelease uploadCrashlyticsSymbolFileSideloadRelease --no-daemon
-
-      - name: Verify APK signature
-        run: |
-          APK="$(find app/build/outputs/apk/sideload/release -maxdepth 1 -name '*.apk' -print -quit)"
+          APK="$(find app/build/outputs/apk/play/diagnostics -maxdepth 1 -name '*.apk' -print -quit)"
           test -n "$APK"
-          APKSIGNER="$(find "$ANDROID_HOME/build-tools" -type f -name apksigner | sort -V | tail -n 1)"
-          test -x "$APKSIGNER"
-          "$APKSIGNER" verify --verbose "$APK"
+          echo "Preview APK: $APK"
           sha256sum "$APK"
 
-      - name: Upload signed APK
+      - name: Upload preview APK
         uses: actions/upload-artifact@v4
         with:
-          name: arvio-profile-sideload-release-${{ github.run_id }}
-          path: app/build/outputs/apk/sideload/release/*.apk
+          name: arvio-profile-preview-${{ github.run_number }}
+          path: app/build/outputs/apk/play/diagnostics/*.apk
           if-no-files-found: error
           retention-days: 7
